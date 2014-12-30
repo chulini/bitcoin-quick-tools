@@ -1,0 +1,60 @@
+<html>
+<head>
+	<title>bitcoin transactions</title>
+	<script src='bitcore.js'></script>
+	<script src='jquery.min.js'></script>
+</head>
+<body>
+<script type="text/javascript">
+function send(){
+	var fromAddress = $('#fromAddress').val();
+	var privateKey = $('#privateKey').val();
+	var toAddress = $('#toAddress').val();
+	var amount = $('#amount').val();
+
+
+	
+	//Get UTXO (unspent outputs = satoshis availables in the from address) from blockchain.info API
+	var utxo_url = "https://blockchain.info/unspent?active="+fromAddress;
+	var utxo = new Array();
+	$.getJSON(utxo_url).done(function(data){
+
+		for(var i = 0; i < data['unspent_outputs'].length; i++){
+			utxoInBlockchainFormat = data['unspent_outputs'][i];
+			var utxoInBitcoreFormat = {
+				'txid': utxoInBlockchainFormat['tx_hash'],
+				outputIndex: utxoInBlockchainFormat['tx_output_n'],
+				satoshis: utxoInBlockchainFormat['value'],
+				script: utxoInBlockchainFormat['script']
+			}
+			utxo[i] = utxoInBitcoreFormat;
+			
+		}
+		console.log(utxo);
+
+
+		var simpleTx = new bitcore.Transaction();
+		simpleTx.from(utxo).to(toAddress, amount);
+		simpleTx.sign(privateKey);
+
+	});
+
+
+
+
+	
+
+}
+</script>
+
+	<p>From address:
+	<input size="45" type="text" id="fromAddress" value="15qabePeE8kUtHRZbTjrkjsAsJD3YEsJZk"></p>
+	<p>Private key of from address:
+	<input size="70" type="text" id="privateKey" value="L14yGUy38higHF7u3NazWZ5hw8xM6h1ZLfw3ZLqDiyN8jQXBifig"></p>
+	<p>To address:
+	<input size="45" type="text" id="toAddress" value="1BtMohgHTUyVXe8oiw7XqHyCZkNKs8AmkC"></p>
+	<p>Amount (in satoshis):
+	<input size="45" type="text" id="amount" value="1"></p>
+	<button onclick="send();">Send</button>
+</body>
+</html>
