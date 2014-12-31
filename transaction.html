@@ -10,10 +10,10 @@ function send(){
 	var fromAddress = $('#fromAddress').val();
 	var privateKey = $('#privateKey').val();
 	var toAddress = $('#toAddress').val();
-	var amount = $('#amount').val();
+	var amount = parseInt($('#amount').val());
+	var fee = parseInt($('#fee').val());
 
-
-	
+	$('#info').html("Getting unspent outputs from blockchain.info's API");
 	//Get UTXO (unspent outputs = satoshis availables in the from address) from blockchain.info API
 	var utxo_url = "https://blockchain.info/unspent?active="+fromAddress;
 	var utxo = new Array();
@@ -22,31 +22,25 @@ function send(){
 		for(var i = 0; i < data['unspent_outputs'].length; i++){
 			utxoInBlockchainFormat = data['unspent_outputs'][i];
 			var utxoInBitcoreFormat = {
-				'txid': utxoInBlockchainFormat['tx_hash'],
-				outputIndex: utxoInBlockchainFormat['tx_output_n'],
-				satoshis: utxoInBlockchainFormat['value'],
-				script: utxoInBlockchainFormat['script']
+				"txId": utxoInBlockchainFormat['tx_hash'],
+				"outputIndex": utxoInBlockchainFormat['tx_output_n'],
+				"satoshis": utxoInBlockchainFormat['value'],
+				"script": utxoInBlockchainFormat['script']
 			}
 			utxo[i] = utxoInBitcoreFormat;
 			
 		}
-		console.log(utxo);
+		
 
 
 		var simpleTx = new bitcore.Transaction();
-		simpleTx.from(utxo).to(toAddress, amount);
-		simpleTx.sign(privateKey);
-
+		simpleTx.to(toAddress, amount).from(utxo).fee(fee).sign(privateKey);
+		
+		console.log(simpleTx.verify());
+		$('#info').html("Transaction verified");
 	});
-
-
-
-
-	
-
 }
 </script>
-
 	<p>From address:
 	<input size="45" type="text" id="fromAddress" value="15qabePeE8kUtHRZbTjrkjsAsJD3YEsJZk"></p>
 	<p>Private key of from address:
@@ -54,7 +48,10 @@ function send(){
 	<p>To address:
 	<input size="45" type="text" id="toAddress" value="1BtMohgHTUyVXe8oiw7XqHyCZkNKs8AmkC"></p>
 	<p>Amount (in satoshis):
-	<input size="45" type="text" id="amount" value="1"></p>
+	<input size="45" type="text" id="amount" value="100"></p>
+	<p>Miners fee (in satoshis):
+	<input size="45" type="text" id="fee" value="100"></p>
 	<button onclick="send();">Send</button>
+	<p id="info"></p>
 </body>
 </html>
