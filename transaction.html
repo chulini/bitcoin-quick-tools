@@ -1,57 +1,120 @@
 <html>
 <head>
-	<title>bitcoin transactions</title>
+	<title>Transaction</title>
 	<script src='bitcore.js'></script>
 	<script src='jquery.min.js'></script>
+	<script src='chain-jquery.min.js'></script>
 </head>
 <body>
 <script type="text/javascript">
+
+var baseUrl = "https://api.chain.com/v2/bitcoin/";
+var apiKey = "07d94cd4431e213d87b412e7d8c79207"; //chain.com api-key-id (you can get your own here: https://chain.com/account/keys)
+var getBalanceAjax;
+
+function getBalance(){
+	//get UTXO (unspent outputs = satoshis availables in the from address) from chain.com API
+
+	var fromAddress = $('#fromAddress').val();
+	$('#balance').html("Getting balance");	
+	var utxo_url = "https://api.chain.com/v2/bitcoin/addresses/"+fromAddress+"/unspents?api-key-id="+apiKey;
+	getBalanceAjax = $.ajax({
+      url: utxo_url,
+      data: {'api-key-id': apiKey},
+      type: 'GET',
+
+      success: function(data) {
+        var totalSatoshis = 0;
+        for(var i = 0; i < data.length; i++){
+			totalSatoshis += data[i].value;
+        }
+        var totalBtc = totalSatoshis / 100000000;
+        $('#balance').html("Balance: "+totalBtc+"[bitcoin] ("+totalSatoshis+"[satoshis])");
+      }
+    });
+}
+
 function send(){
 	var fromAddress = $('#fromAddress').val();
 	var privateKey = $('#privateKey').val();
 	var toAddress = $('#toAddress').val();
 	var amount = parseInt($('#amount').val());
 	var fee = parseInt($('#fee').val());
-
-	$('#info').html("Getting unspent outputs from blockchain.info's API");
-	//Get UTXO (unspent outputs = satoshis availables in the from address) from blockchain.info API
-	var utxo_url = "https://blockchain.info/unspent?active="+fromAddress;
-	var utxo = new Array();
-	$.getJSON(utxo_url).done(function(data){
-
-		for(var i = 0; i < data['unspent_outputs'].length; i++){
-			utxoInBlockchainFormat = data['unspent_outputs'][i];
-			var utxoInBitcoreFormat = {
-				"txId": utxoInBlockchainFormat['tx_hash'],
-				"outputIndex": utxoInBlockchainFormat['tx_output_n'],
-				"satoshis": utxoInBlockchainFormat['value'],
-				"script": utxoInBlockchainFormat['script']
-			}
-			utxo[i] = utxoInBitcoreFormat;
-			
-		}
-		
-
-
-		var simpleTx = new bitcore.Transaction();
-		simpleTx.to(toAddress, amount).from(utxo).fee(fee).sign(privateKey);
-		
-		console.log(simpleTx.verify());
-		$('#info').html("Transaction verified");
+	
+	var chain = new Chain({
+	  blockChain: "bitcoin",
+	  apiKeyId: apiKey
 	});
+
+	chain.buildTransaction(
+	  {
+	    inputs: [
+	      {
+	        address: fromAddress
+	      }
+	    ],
+	    outputs: [
+	      {
+	        address: toAddress,
+	        amount: amount
+	      }
+	    ]
+	  }, function(err, templateTx) {
+	  	if(!err){
+	  		var privateKeys = [privateKey];
+	  		var signedTx = chain.signTemplate(templateTx,privateKeys);
+	  		chain.sendTransaction(signedTx,function(err, resp){
+	  			if(!err){
+	  				var hash = resp.transaction_hash;
+	  				$('#balance').html('<img src="success.png"><br/>SUCCESS!, your transaction on now in the blockchain waiting for confirmation:<br/><a href="https://insight.bitpay.com/tx/'+hash+'" target="_blank">'+hash+'</a>');
+	  			} else {
+	  				$('#balance').html("error: "+err);
+	  			}
+	  		});
+	  		
+	  	} else {
+	  		$('#balance').html("error: "+err);
+	  	}
+	  	
+	  });
+
+
 }
+function checkAddresses(){
+	var fromAddress = $('#fromAddress').val();
+	var toAddress = $('#toAddress').val();
+
+	
+	if(bitcore.Address.isValid(fromAddress, 'livenet')){
+		getBalance();
+	} else {
+		$('#balance').html('');
+		$('#send').html('From address not valid');
+	}
+
+	if(bitcore.Address.isValid(fromAddress,'livenet') && bitcore.Address.isValid(toAddress,'livenet')){
+		$('#send').html('<button onclick="send();">Send</button>');	
+	}
+}
+
+$(document).ready(function (){
+	checkAddresses();
+});
 </script>
+	<h2 id="balance"></h2>
+
 	<p>From address:
-	<input size="45" type="text" id="fromAddress" value="15qabePeE8kUtHRZbTjrkjsAsJD3YEsJZk"></p>
+	<input size="45" type="text" id="fromAddress" onKeyUp='checkAddresses();' value="15qabePeE8kUtHRZbTjrkjsAsJD3YEsJZk"></p>
 	<p>Private key of from address:
 	<input size="70" type="text" id="privateKey" value="L14yGUy38higHF7u3NazWZ5hw8xM6h1ZLfw3ZLqDiyN8jQXBifig"></p>
 	<p>To address:
-	<input size="45" type="text" id="toAddress" value="1BtMohgHTUyVXe8oiw7XqHyCZkNKs8AmkC"></p>
+	<input size="45" type="text" id="toAddress" onKeyUp='checkAddresses();' value="1BtMohgHTUyVXe8oiw7XqHyCZkNKs8AmkC"></p>
 	<p>Amount (in satoshis):
-	<input size="45" type="text" id="amount" value="100"></p>
+	<input size="45" type="text" id="amount" value="10000"></p>
 	<p>Miners fee (in satoshis):
-	<input size="45" type="text" id="fee" value="100"></p>
-	<button onclick="send();">Send</button>
-	<p id="info"></p>
+	<input size="45" type="text" id="fee" value="10000" disabled></p>
+	<p id="send"></p>
+	<a href="index.html">&lt; Back</a>
+	
 </body>
 </html>

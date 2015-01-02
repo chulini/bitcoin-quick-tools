@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>olakease bitcoin</title>
+	<title>Create New Address</title>	
 	<script src="bitcore.js"></script>
 	<script src='jquery.min.js'></script>
 </head>
@@ -10,18 +10,18 @@ function GeneratePair(){
 	var privateKey = new bitcore.PrivateKey();
 	var publicKey = new bitcore.PublicKey(privateKey);
 	var address = publicKey.toAddress(bitcore.Networks.livenet);
-	$('#pk').html('Private key: '+privateKey);
-	$('#ad').html('Address: '+address);
+	$('#pk').val(privateKey);
+	$('#ad').val(address);
 }
 
 $(document).ready(function(){
 	GeneratePair();
 });
 </script>
-
-<a href="#" id='test' onClick="GeneratePair();">generate new private key & address</a>
-<p id="pk"></p>
-<p id="ad"></p>
- 
+<p>Remember to store the private key / address pair if you want to use them. You will need them to recieve/send bitcoin.</p>
+<a href="#" id='generate' onClick="GeneratePair();">Generate new private key & address</a>
+<p>Private Key: <input size="70" id="pk"></p>
+<p>Public Address: <input size="45" id="ad"></p>
+ <a href="index.html">&lt; Back</a>
 </body>
 </html>
