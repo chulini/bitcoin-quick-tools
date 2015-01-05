@@ -1,12 +1,23 @@
 <html>
 <head>
-	<title>Simple Bitcoin Wallet</title>
+	<title>Bitcoin Simple Wallet</title>
+	<link rel="stylesheet" type="text/css" href="css/yui-reset.css">
+  	<link rel="stylesheet" type="text/css" href="css/style.css">
+  	<script src='js/jquery.min.js'></script>
 </head>
-<body>
-	<p>This Bitcoin Wallet does NOT store any address, private key or any kind of data. All data is generated via javascript/html.</p>
-	<ul>
-		<li><a href="address-generator.html">Address generator</a></li>
-		<li><a href="transaction.html">Transaction</a></li>
-	</ul>
+<body id="fadeIn">
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#fadeIn').fadeIn('slow');
+});
+</script>
+	<h1>Simple Bitcoin Wallet</h1>
+	
+	<a class="button" href="address-generator.html" id="address-button">Generate Address</a>
+	<a class="button" href="transaction.html" id="transaction-button">Make Transaction</a>
+
+	<p class="info">This Bitcoin Wallet does NOT store any address, private key or any kind of data. All data is generated in your computer via Javascript/HTML.<br/>
+	<br/>
+	You can <a href="https://github.com/chulini/simple-bitcoin-wallet/archive/master.zip">download the source code</a> or clone the <a href="https://github.com/chulini/simple-bitcoin-wallet">github repository</a>.</p>
 </body>
 </html>
