@@ -22,10 +22,19 @@ $(document).ready(function(){
 	GeneratePair();
 });
 </script>
-<p>Remember to store the private key / address pair if you want to use them. You will need them to recieve/send bitcoin.</p>
-<a href="#" id='generate' onClick="GeneratePair();">Generate new private key & address</a>
-<p>Public Address: <input size="45" id="ad"></p>
-<p>Private Key: <input size="70" id="pk"></p>
+
+
+<a class="button" href="#" id="generate" onClick="GeneratePair();">Generate address <br/>&amp; private key</a>
+
+<p class="field-txt">Public Address</p>
+<input class="key" size="60" id="ad">
+
+<p class="field-txt">Private Key</p>
+<input class="key" size="60" id="pk">
+
+<div class="box">
+	<p>Remember to store securely your public address and it's private key if you want to recieve or send bitcoin.</p>
+</div>
 
  <a href="index.html">&lt; Back</a>
 </body>
