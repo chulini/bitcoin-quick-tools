@@ -31,7 +31,7 @@ function getBalance(){
 			totalSatoshis += data[i].value;
         }
         var totalBtc = totalSatoshis / 100000000;
-        $('#balance').html("Balance: "+totalBtc+"[bitcoin] ("+totalSatoshis+"[satoshis])");
+        $('#balance').html(totalBtc+"[bitcoin] ("+totalSatoshis+"[satoshis])");
       }
     });
 }
@@ -70,17 +70,23 @@ function send(){
 	  				var hash = resp.transaction_hash;
 	  				$('#balance').html('<img src="success.png"><br/>SUCCESS!, your transaction on now in the blockchain waiting for confirmation:<br/><a href="https://insight.bitpay.com/tx/'+hash+'" target="_blank">'+hash+'</a>');
 	  			} else {
-	  				$('#balance').html("error: "+err);
+	  				error(err);
 	  			}
 	  		});
 	  		
 	  	} else {
-	  		$('#balance').html("error: "+err);
+	  		error(err);
 	  	}
 	  	
 	  });
 
 
+}
+
+function error(err){
+	$('#balance').html('');
+	$('#send-toggle').html('');
+	$('#error').html('ERROR: '+err);
 }
 function checkAddresses(){
 	var fromAddress = $('#fromAddress').val();
@@ -90,12 +96,16 @@ function checkAddresses(){
 	if(bitcore.Address.isValid(fromAddress, 'livenet')){
 		getBalance();
 	} else {
-		$('#balance').html('');
-		$('#send').html('From address not valid');
+		error('Your public address is not valid');
+	}
+
+	if(!bitcore.Address.isValid(toAddress, 'livenet')){
+		error('Recipient\'s public address is not valid');
 	}
 
 	if(bitcore.Address.isValid(fromAddress,'livenet') && bitcore.Address.isValid(toAddress,'livenet')){
-		$('#send').html('<button onclick="send();">Send</button>');	
+		$('#error').html('');
+		$('#send-toggle').html('<a class="button" href="#" id="transaction-button" onclick="send();">Send</a>');	
 	}
 }
 
@@ -103,20 +113,32 @@ $(document).ready(function (){
 	checkAddresses();
 });
 </script>
-	<h2 id="balance"></h2>
-
-	<p>From address:
-	<input size="45" type="text" id="fromAddress" onKeyUp='checkAddresses();' value="15qabePeE8kUtHRZbTjrkjsAsJD3YEsJZk"></p>
-	<p>Private key of from address:
-	<input size="70" type="text" id="privateKey" value="L14yGUy38higHF7u3NazWZ5hw8xM6h1ZLfw3ZLqDiyN8jQXBifig"></p>
-	<p>To address:
-	<input size="45" type="text" id="toAddress" onKeyUp='checkAddresses();' value="1BtMohgHTUyVXe8oiw7XqHyCZkNKs8AmkC"></p>
-	<p>Amount (in satoshis):
-	<input size="45" type="text" id="amount" value="10000"></p>
-	<p>Miners fee (in satoshis):
-	<input size="45" type="text" id="fee" value="10000" disabled></p>
-	<p id="send"></p>
-	<a href="index.html">&lt; Back</a>
+<div class="wrapper">
+	<h1>Bitcoin Quick Tools</h1>
+	<p class="field-txt" id="error"></p>
+	<!-- <p class="field-txt">Balance</p> -->
+	<p class="field-txt" id="balance"></p>
 	
+	<p class="field-txt">Your public address</p>
+	<input class="key" size="45" type="text" id="fromAddress" onKeyUp='checkAddresses();' value="15qabePeE8kUtHRZbTjrkjsAsJD3YEsJZk"></p>
+	
+	<p class="field-txt">Recipient's public adress</p>
+	<input class="key" size="45" type="text" id="toAddress" onKeyUp='checkAddresses();' value="1BtMohgHTUyVXe8oiw7XqHyCZkNKs8AmkC"></p>
+
+	<p class="field-txt">Amount to transfer (in satoshis)</p>
+	<input class="key" size="45" type="text" id="amount" value="10000"></p>
+	<p class="field-txt">Miners's fee (in satoshis)</p>
+	<input class="key" size="45" type="text" id="fee" value="10000" disabled></p>
+
+	<p class="field-txt">Your address's Private Key</p>
+	<input class="key" size="70" type="text" id="privateKey" value="L14yGUy38higHF7u3NazWZ5hw8xM6h1ZLfw3ZLqDiyN8jQXBifig"></p>
+
+	
+	
+	<div id="send-toggle"></div>
+	
+
+	<a class="button" href="index.html" id="back">Back</a>
+</div>
 </body>
 </html>

@@ -23,19 +23,21 @@ $(document).ready(function(){
 });
 </script>
 
+<div class="wrapper">
+	<h1>Bitcoin Quick Tools</h1>
+	<a class="button" href="#" id="generate" onClick="GeneratePair();">Generate address <br/>&amp; private key</a>
 
-<a class="button" href="#" id="generate" onClick="GeneratePair();">Generate address <br/>&amp; private key</a>
+	<p class="field-txt">Public Address</p>
+	<input class="key" size="60" id="ad">
 
-<p class="field-txt">Public Address</p>
-<input class="key" size="60" id="ad">
+	<p class="field-txt">Private Key</p>
+	<input class="key" size="60" id="pk">
 
-<p class="field-txt">Private Key</p>
-<input class="key" size="60" id="pk">
+	<div class="box">
+		<p>Remember to store securely your public address and it's private key if you want to recieve or send bitcoin.</p>
+	</div>
 
-<div class="box">
-	<p>Remember to store securely your public address and it's private key if you want to recieve or send bitcoin.</p>
+	<a class="button" href="index.html" id="back">Back</a>
 </div>
-
- <a href="index.html">&lt; Back</a>
 </body>
 </html>

@@ -30,13 +30,19 @@ p{
 	background: url(../images/send.png) no-repeat left center, -moz-linear-gradient(top,#00f2ff 0%,#00ced9);
 	background: url(../images/send.png) no-repeat left center, -webkit-gradient(linear, left top, left bottom,from(#00f2ff),to(#00ced9));
 }
+#back{
+	background: url(../images/back.png) no-repeat left center, -moz-linear-gradient(top,#00f2ff 0%,#00ced9);
+	background: url(../images/back.png) no-repeat left center, -webkit-gradient(linear, left top, left bottom,from(#00f2ff),to(#00ced9));
+}
+
+
 a.button{
 	border-radius: 50px; 
 	-moz-border-radius: 50px; 
 	-webkit-border-radius: 50px; 
 	border: 2px solid #FFFFFF;
 
-	max-width: 370px;
+	width: 390px;
 	margin: 10px auto;
 	padding: 40px 0px 40px 90px;
 	color: white;
@@ -84,10 +90,10 @@ button.css3button {
 	
 	background: #f3fcfd;
 	border: 1px solid #a7f5f9;
-	max-width: 370px;
+	width: 390px;
 	margin: 10px auto;
 	display: block;
-	padding: 20px 45px;
+	padding: 20px 44px;
 	text-align: justify;
 }
 p{
@@ -101,11 +107,17 @@ p a{
 
 }
 
+.wrapper{
+	max-width: 480px;
+	margin: 0 auto;
+	
+
+}
 .field-txt{
 	color: #f3fcfd;
 	font-size: 30px;
 	margin: 10px auto;
-	max-width: 370px;
+	width: 100%;
 	text-shadow: 0px -1px 1px rgba(000,000,000,0.6), 0px 1px 0px rgba(255,255,255,0.5);
 	text-align: center;	
 
@@ -113,8 +125,9 @@ p a{
 }
 
 .key{
-	
-	margin: 10px auto;
+	width: 100%;
+	height: 60px;
+	margin: 10px auto 20px auto;
 	display: block;
 	text-align: center;
 
@@ -136,3 +149,8 @@ p a{
 	background: url('../images/loader.gif') 50% 50% no-repeat, -webkit-linear-gradient(70deg, #19dce4 0%, #0298c2 100%);
 }
 
+
+#send-toggle{
+	margin: 0;
+	padding: 0;
+}
