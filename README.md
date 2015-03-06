@@ -1,5 +1,5 @@
 # bitcoin-quick-tools
-Quick bitcoin tools using chain.com API
+Quick bitcoin tools using bitcore.js and chain.com API
 
 
 Credits
