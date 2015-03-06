@@ -68,7 +68,7 @@ function send(){
 	  		chain.sendTransaction(signedTx,function(err, resp){
 	  			if(!err){
 	  				var hash = resp.transaction_hash;
-	  				$('#balance').html('<img src="success.png"><br/>SUCCESS!, your transaction on now in the blockchain waiting for confirmation:<br/><a href="https://insight.bitpay.com/tx/'+hash+'" target="_blank">'+hash+'</a>');
+	  				$('#balance').html('<img src="images/success.png"><br/>SUCCESS!, your transaction on now in the blockchain waiting for confirmation:<br/><a href="https://insight.bitpay.com/tx/'+hash+'" target="_blank">View Transaction</a>');
 	  			} else {
 	  				error(err);
 	  			}
